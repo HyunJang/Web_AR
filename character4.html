@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  <title>AR 체험 - 회화나무</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+  <!-- 스플래시 화면 -->
+  <div id="splash-screen">
+    <img src="/assets/popup.png" alt="AR Photo 시작" class="splash-image">
+  </div>
+  
+  <!-- 배경음악 -->
+  <audio id="background-music" preload="auto" loop>
+    <source src="/assets/back.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+  
+  <!-- 캐릭터 등장 효과음 -->
+  <audio id="character-appear-sound" preload="auto">
+    <source src="/assets/open.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+  
+  <div id="camera-container">
+    <video id="video" autoplay muted playsinline></video>
+    <canvas id="canvas" style="display: none;"></canvas>
+    
+    <!-- intro-text 제거 (말풍선 이미지를 사용하므로 불필요) -->
+    
+    <!-- 카메라 화면 말풍선 (이미지) -->
+    <div id="camera-speech-bubble" class="speech-bubble camera-speech">
+      <img id="camera-speech-image" class="speech-image" alt="카메라 말풍선" />
+    </div>
+    
+    <!-- 빛줄기 효과 -->
+    <div id="light-beam">
+      <img src="/assets/characters/light.png" alt="빛줄기" />
+    </div>
+    
+    <!-- 4번 캐릭터 전용 바닥 이미지 (고정) -->
+    <div id="character-ground" class="character-ground" style="display: none;">
+      <img src="/assets/characters/c4_ground.png" alt="바닥" />
+    </div>
+    
+    <div id="character" data-photo-guidance="밀양관아 마당에 내가 서 있단다.세월을 품은 나를 바라보며, 조선의 숨결을느껴보게.">
+      <img src="/assets/characters/c4.png" alt="회화나무" onerror="this.src='/assets/characters/c4.png'" />
+    </div>
+
+    <div id="character-guide" aria-hidden="true">
+      <img src="/assets/guide.png" alt="캐릭터 조작 가이드" />
+    </div>
+
+    <div id="controls">
+        <button class="btn btn-primary" id="capture-btn">
+          <img src="/assets/characters/camera2.png" alt="사진 찍기" class="camera-icon">
+        </button>
+        <button class="btn btn-secondary" id="camera-switch-btn">
+          <img src="/assets/camera_back.png" alt="카메라 전환" class="camera-switch-icon">
+        </button>
+      <button class="btn" id="retake-btn" style="display: none;">🔄 다시 찍기</button>
+    </div>
+    
+    <div id="loading">
+      <div class="spinner"></div>
+      <p>카메라를 준비하고 있습니다...</p>
+    </div>
+    
+    <div id="permission-request">
+      <h3>카메라 권한이 필요합니다</h3>
+      <p>AR 체험을 위해 카메라 접근 권한을 허용해주세요.</p>
+      <div class="permission-instructions">
+        <h4>아이폰 사용자를 위한 안내:</h4>
+        <ol>
+          <li>화면 상단의 카메라 아이콘을 터치하세요</li>
+          <li>"허용"을 선택하세요</li>
+          <li>페이지를 새로고침하세요</li>
+        </ol>
+        <p><strong>참고:</strong> HTTPS 연결이 필요합니다.</p>
+      </div>
+      <button class="btn btn-primary" id="request-permission">권한 허용</button>
+    </div>
+  </div>
+  
+  <div id="photo-result">
+    <img id="captured-photo" alt="촬영된 사진" />
+    
+    <!-- 말풍선 정보 (이미지) -->
+    <div id="speech-bubble" class="speech-bubble">
+      <img id="result-speech-image" class="speech-image" alt="촬영 후 말풍선" />
+    </div>
+    
+    <!-- 하단 액션 버튼 -->
+    <div id="photo-actions">
+      <button class="action-btn retake-btn" id="retake-btn">
+        <img src="/assets/reTake.png" alt="다시 찍기" class="action-icon">
+      </button>
+      <button class="action-btn save-btn" id="save-btn">
+        <img src="/assets/save.png" alt="저장하기" class="action-icon">
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // 캐릭터 데이터를 JavaScript로 전달
+    window.characterData = {
+      id: 4,
+      name: '회화나무',
+      image: '/assets/characters/c4.png',
+      greeting: {
+        title: '나는 회화나무. 밀양 관아 앞에서수백 년을 서 있었지.',
+        message: '사명대사의 곁을 지켜오며, 이 땅의 변화를 지켜봤단다.이 고요한 빛을 나와 함께 담아보자.'
+      },
+      photoGuidance: '밀양관아 마당에 내가 서 있단다.세월을 품은 나를 바라보며, 조선의 숨결을느껴보게.',
+      location: '밀양관아/밀양강 산책로'
+    };
+  </script>
+  <script src="./js/webar.js"></script>
+</body>
+</html>

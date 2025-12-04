@@ -1318,3 +1318,72 @@
       opacity: 1;
     }
   }
+  
+  /* 화면 방향 경고 (가로 모드) */
+  #orientation-warning {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.95);
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 999999;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  
+  #orientation-warning.show {
+    display: flex;
+  }
+  
+  #orientation-warning-icon {
+    font-size: 64px;
+    margin-bottom: 30px;
+    animation: rotateIcon 2s ease-in-out infinite;
+  }
+  
+  @keyframes rotateIcon {
+    0%, 100% {
+      transform: rotate(0deg);
+    }
+    50% {
+      transform: rotate(90deg);
+    }
+  }
+  
+  #orientation-warning h2 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #fff;
+  }
+  
+  #orientation-warning p {
+    font-size: 18px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+    max-width: 300px;
+  }
+  
+  /* 가로 모드 감지 */
+  @media screen and (orientation: landscape) and (max-width: 768px) {
+    body {
+      overflow: hidden;
+    }
+    
+    #orientation-warning {
+      display: flex !important;
+    }
+    
+    #camera-container,
+    #splash-screen,
+    #photo-result {
+      display: none !important;
+    }
+  }

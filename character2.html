@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, orientation=portrait" />
   <title>AR 체험 - 의병대장</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -60,9 +60,6 @@
         <button class="btn btn-primary" id="capture-btn">
           <img src="./assets/characters/camera2.png" alt="사진 찍기" class="camera-icon">
         </button>
-        <button class="btn btn-secondary" id="camera-switch-btn">
-          <img src="./assets/camera_back.png" alt="카메라 전환" class="camera-switch-icon">
-        </button>
       <button class="btn" id="retake-btn" style="display: none;">🔄 다시 찍기</button>
     </div>
     
@@ -104,6 +101,13 @@
         <img src="./assets/save.png" alt="저장하기" class="action-icon">
       </button>
     </div>
+  </div>
+  
+  <!-- 화면 방향 경고 (가로 모드) -->
+  <div id="orientation-warning">
+    <div id="orientation-warning-icon">📱</div>
+    <h2>세로 모드로 사용해주세요</h2>
+    <p>이 AR 체험은 세로 모드에서만 제공됩니다.<br>기기를 세로로 회전해주세요.</p>
   </div>
 
   <script>

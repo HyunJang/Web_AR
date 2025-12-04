@@ -18,7 +18,7 @@ class WebARExperience {
     this.stream = null;
     this.isCharacterVisible = false;
     this.capturedImageData = null;
-    this.currentCamera = 'environment'; // 'user' (전면) 또는 'environment' (후면)
+    this.currentCamera = 'environment'; // 후면 카메라만 사용
     this.availableCameras = [];
     this.currentCameraIndex = 0;
     this.wasMusicPlaying = false; // 페이지 숨김 전 재생 상태 추적
@@ -127,7 +127,7 @@ class WebARExperience {
       
       this.stream = await navigator.mediaDevices.getUserMedia({
         video: {
-          facingMode: this.currentCamera,
+          facingMode: 'environment', // 후면 카메라만 사용
           width: { ideal: 1280, max: 1920 },
           height: { ideal: 720, max: 1080 }
         },
@@ -206,12 +206,8 @@ class WebARExperience {
   }
   
   updateVideoMirror() {
-    // 전면 카메라(user)일 때 좌우 반전
-    if (this.currentCamera === 'user') {
-      this.video.style.transform = 'scaleX(-1)';
-    } else {
-      this.video.style.transform = 'scaleX(1)';
-    }
+    // 후면 카메라만 사용하므로 반전 없음
+    this.video.style.transform = 'scaleX(1)';
   }
   
   playCharacterAppearSound() {
@@ -635,10 +631,6 @@ class WebARExperience {
   setupEventListeners() {
     document.getElementById('capture-btn').addEventListener('click', () => {
       this.capturePhoto();
-    });
-    
-    document.getElementById('camera-switch-btn').addEventListener('click', () => {
-      this.switchCamera();
     });
     
     // 이벤트 위임을 사용하여 동적으로 생성되는 버튼들 처리
@@ -1256,8 +1248,8 @@ class WebARExperience {
     const videoAR = vW / vH;
     const viewAR = viewW / viewH;
     
-    // 셀카 모드(전면 카메라)일 때 비디오 반전 적용
-    const isFrontCamera = this.currentCamera === 'user';
+    // 후면 카메라만 사용하므로 반전 없음
+    const isFrontCamera = false;
     
     // 비디오 크롭 정보 계산 (CSS object-fit: cover 방식)
     let sx = 0, sy = 0, sW = vW, sH = vH;
@@ -2368,90 +2360,12 @@ class WebARExperience {
       this.availableCameras = devices.filter(device => device.kind === 'videoinput');
       
       console.log('사용 가능한 카메라:', this.availableCameras.length + '개');
-      
-      // 카메라 전환 버튼 표시/숨김 처리
-      this.updateCameraSwitchButton();
     } catch (error) {
       console.error('카메라 목록 조회 실패:', error);
     }
   }
   
-  // 카메라 전환 버튼 업데이트
-  updateCameraSwitchButton() {
-    const switchBtn = document.getElementById('camera-switch-btn');
-    if (switchBtn) {
-      // 카메라 전환 버튼 항상 표시
-      switchBtn.style.display = 'inline-block';
-    }
-  }
-  
-  // 카메라 전환
-  async switchCamera() {
-    try {
-      // 현재 스트림 정지 (더 안전한 방법)
-      if (this.stream) {
-        this.stream.getTracks().forEach(track => {
-          track.stop();
-          console.log('트랙 정지:', track.kind);
-        });
-        this.stream = null;
-      }
-      
-      // 현재 facingMode 확인 및 전환 (더 안전한 방법)
-      let currentFacingMode = 'environment'; // 기본값
-      
-      if (this.currentCamera) {
-        if (typeof this.currentCamera === 'string') {
-          currentFacingMode = this.currentCamera;
-        } else if (this.currentCamera.facingMode) {
-          currentFacingMode = this.currentCamera.facingMode;
-        }
-      }
-      
-      const newFacingMode = currentFacingMode === 'environment' ? 'user' : 'environment';
-      
-      console.log('카메라 전환 시도:', { from: currentFacingMode, to: newFacingMode });
-      
-      // 새로운 카메라 설정으로 스트림 시작
-      const constraints = {
-        video: {
-          facingMode: { ideal: newFacingMode },
-          width: { ideal: 1280 },
-          height: { ideal: 720 }
-        },
-        audio: false
-      };
-      
-      this.stream = await navigator.mediaDevices.getUserMedia(constraints);
-      this.video.srcObject = this.stream;
-      
-      // 현재 카메라 정보 업데이트
-      this.currentCamera = newFacingMode;
-      
-      // 캔버스 크기 재설정
-      this.video.onloadedmetadata = () => {
-        this.video.play();
-        this.setupCanvas();
-        this.updateVideoMirror(); // 비디오 반전 적용
-      };
-      
-      // 성능 최적화: 카메라 전환 알림 제거 (사용자 요청)
-      // this.showNotification('카메라가 전환되었습니다.', 'success');
-      
-    } catch (error) {
-      console.error('카메라 전환 실패:', error);
-      this.showNotification('카메라 전환에 실패했습니다.', 'error');
-      
-      // 실패 시 기본 카메라로 복구
-      try {
-        console.log('기본 카메라로 복구 시도');
-        await this.startCamera();
-      } catch (recoveryError) {
-        console.error('카메라 복구 실패:', recoveryError);
-        this.showNotification('카메라를 복구할 수 없습니다.', 'error');
-      }
-    }
-  }
+  // 카메라 전환 기능 제거됨 - 셀카 모드는 지원하지 않음
   
   // 배경음악 재개 함수 (여러 방법으로 시도)
   resumeBackgroundMusic() {
@@ -2914,8 +2828,87 @@ class SplashManager {
   }
 }
 
+// 화면 방향 고정 및 감지
+class OrientationManager {
+  constructor() {
+    this.orientationWarning = document.getElementById('orientation-warning');
+    this.init();
+  }
+  
+  init() {
+    // 초기 방향 확인
+    this.checkOrientation();
+    
+    // 방향 변경 감지
+    window.addEventListener('orientationchange', () => {
+      setTimeout(() => {
+        this.checkOrientation();
+      }, 100);
+    });
+    
+    window.addEventListener('resize', () => {
+      this.checkOrientation();
+    });
+    
+    // Screen Orientation API로 방향 고정 시도 (지원되는 경우)
+    this.lockOrientation();
+  }
+  
+  checkOrientation() {
+    const isLandscape = window.innerWidth > window.innerHeight;
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    if (this.orientationWarning) {
+      if (isLandscape && isMobile) {
+        // 가로 모드일 때 경고 표시
+        this.orientationWarning.classList.add('show');
+      } else {
+        // 세로 모드일 때 경고 숨김
+        this.orientationWarning.classList.remove('show');
+      }
+    }
+  }
+  
+  async lockOrientation() {
+    // Screen Orientation API 지원 확인 및 세로 모드 고정 시도
+    if (screen.orientation && screen.orientation.lock) {
+      try {
+        await screen.orientation.lock('portrait');
+        console.log('화면 방향이 세로 모드로 고정되었습니다.');
+      } catch (error) {
+        // 방향 고정 실패 (일부 브라우저/기기에서는 제한됨)
+        console.log('화면 방향 고정을 지원하지 않거나 실패:', error);
+      }
+    } else if (screen.lockOrientation) {
+      // 구형 API 지원
+      try {
+        screen.lockOrientation('portrait');
+      } catch (error) {
+        console.log('화면 방향 고정을 지원하지 않거나 실패:', error);
+      }
+    } else if (screen.mozLockOrientation) {
+      // Firefox 지원
+      try {
+        screen.mozLockOrientation('portrait');
+      } catch (error) {
+        console.log('화면 방향 고정을 지원하지 않거나 실패:', error);
+      }
+    } else if (screen.msLockOrientation) {
+      // IE/Edge 지원
+      try {
+        screen.msLockOrientation('portrait');
+      } catch (error) {
+        console.log('화면 방향 고정을 지원하지 않거나 실패:', error);
+      }
+    }
+  }
+}
+
 // 페이지 로드 시 WebAR 체험 시작
 document.addEventListener('DOMContentLoaded', () => {
+  // 화면 방향 관리자 초기화
+  const orientationManager = new OrientationManager();
+  
   // WebAR 체험을 먼저 시작 (카메라를 백그라운드에서 활성화)
   const webar = new WebARExperience();
   // 전역 변수로 저장하여 다른 곳에서 접근 가능하도록

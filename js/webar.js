@@ -2828,22 +2828,49 @@ class SplashManager {
   }
 }
 
-// 화면 방향 고정
+// 화면 방향 고정 및 감지
 class OrientationManager {
   constructor() {
+    this.orientationWarning = document.getElementById('orientation-warning');
+    this.isLocked = false;
     this.init();
   }
   
   init() {
+    // 초기 방향 확인
+    this.checkOrientation();
+    
     // Screen Orientation API로 방향 고정 시도 (지원되는 경우)
     this.lockOrientation();
     
-    // 방향 변경 감지 시 다시 고정 시도
+    // 방향 변경 감지
     window.addEventListener('orientationchange', () => {
       setTimeout(() => {
-        this.lockOrientation();
+        this.checkOrientation();
+        // 고정이 해제되었을 수 있으므로 다시 고정 시도
+        if (!this.isLocked) {
+          this.lockOrientation();
+        }
       }, 100);
     });
+    
+    window.addEventListener('resize', () => {
+      this.checkOrientation();
+    });
+  }
+  
+  checkOrientation() {
+    const isLandscape = window.innerWidth > window.innerHeight;
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    if (this.orientationWarning) {
+      // 가로 모드이고 방향 고정이 안 된 경우 경고 표시
+      if (isLandscape && isMobile && !this.isLocked) {
+        this.orientationWarning.classList.add('show');
+      } else {
+        this.orientationWarning.classList.remove('show');
+      }
+    }
   }
   
   async lockOrientation() {
@@ -2851,33 +2878,65 @@ class OrientationManager {
     if (screen.orientation && screen.orientation.lock) {
       try {
         await screen.orientation.lock('portrait');
+        this.isLocked = true;
         console.log('화면 방향이 세로 모드로 고정되었습니다.');
+        // 고정 성공 시 경고 숨김
+        if (this.orientationWarning) {
+          this.orientationWarning.classList.remove('show');
+        }
       } catch (error) {
         // 방향 고정 실패 (일부 브라우저/기기에서는 제한됨)
-        // CSS transform으로 대체 처리됨
+        this.isLocked = false;
         console.log('화면 방향 고정을 지원하지 않거나 실패:', error);
+        // 실패 시 방향 확인하여 경고 표시
+        this.checkOrientation();
       }
     } else if (screen.lockOrientation) {
       // 구형 API 지원
       try {
         screen.lockOrientation('portrait');
+        this.isLocked = true;
+        console.log('화면 방향이 세로 모드로 고정되었습니다.');
+        if (this.orientationWarning) {
+          this.orientationWarning.classList.remove('show');
+        }
       } catch (error) {
+        this.isLocked = false;
         console.log('화면 방향 고정을 지원하지 않거나 실패:', error);
+        this.checkOrientation();
       }
     } else if (screen.mozLockOrientation) {
       // Firefox 지원
       try {
         screen.mozLockOrientation('portrait');
+        this.isLocked = true;
+        console.log('화면 방향이 세로 모드로 고정되었습니다.');
+        if (this.orientationWarning) {
+          this.orientationWarning.classList.remove('show');
+        }
       } catch (error) {
+        this.isLocked = false;
         console.log('화면 방향 고정을 지원하지 않거나 실패:', error);
+        this.checkOrientation();
       }
     } else if (screen.msLockOrientation) {
       // IE/Edge 지원
       try {
         screen.msLockOrientation('portrait');
+        this.isLocked = true;
+        console.log('화면 방향이 세로 모드로 고정되었습니다.');
+        if (this.orientationWarning) {
+          this.orientationWarning.classList.remove('show');
+        }
       } catch (error) {
+        this.isLocked = false;
         console.log('화면 방향 고정을 지원하지 않거나 실패:', error);
+        this.checkOrientation();
       }
+    } else {
+      // API를 지원하지 않는 경우
+      this.isLocked = false;
+      this.checkOrientation();
     }
   }
 }

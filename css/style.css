@@ -1319,38 +1319,71 @@
     }
   }
   
-  /* 가로 모드 강제 회전 방지 (세로 모드 유지) */
+  /* 화면 방향 경고 (가로 모드) */
+  #orientation-warning {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.95);
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 999999;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  
+  #orientation-warning.show {
+    display: flex;
+  }
+  
+  #orientation-warning-icon {
+    font-size: 64px;
+    margin-bottom: 30px;
+    animation: rotateIcon 2s ease-in-out infinite;
+  }
+  
+  @keyframes rotateIcon {
+    0%, 100% {
+      transform: rotate(0deg);
+    }
+    50% {
+      transform: rotate(90deg);
+    }
+  }
+  
+  #orientation-warning h2 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #fff;
+  }
+  
+  #orientation-warning p {
+    font-size: 18px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+    max-width: 300px;
+  }
+  
+  /* 가로 모드 감지 */
   @media screen and (orientation: landscape) and (max-width: 768px) {
-    html {
-      transform: rotate(-90deg);
-      transform-origin: center center;
-      position: fixed;
-      width: 100vh;
-      height: 100vw;
-      top: 50%;
-      left: 50%;
-      margin-top: -50vw;
-      margin-left: -50vh;
+    body {
+      overflow: hidden;
     }
     
-    body {
-      width: 100vh;
-      height: 100vw;
-      overflow: hidden;
-      position: fixed;
+    #orientation-warning {
+      display: flex !important;
     }
     
     #camera-container,
     #splash-screen,
     #photo-result {
-      width: 100vh;
-      height: 100vw;
-    }
-    
-    #video,
-    #canvas,
-    #captured-photo {
-      width: 100vh !important;
-      height: 100vw !important;
+      display: none !important;
     }
   }

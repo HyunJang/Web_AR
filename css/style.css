@@ -1082,6 +1082,15 @@
     will-change: transform, opacity, top;
   }
   
+  /* 가로 모드에서 말풍선 숨기기 */
+  @media (orientation: landscape) {
+    .speech-bubble {
+      display: none !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+    }
+  }
+  
   .speech-bubble.show {
     transform: translateX(-50%) translateY(0);
     opacity: 1;
@@ -1331,7 +1340,7 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    padding-top: 10vh;
+    padding-top: 1vh;
     z-index: 2147483648; /* 말풍선보다 높게 설정 */
     opacity: 0;
     visibility: hidden;
@@ -1403,21 +1412,23 @@
   /* 가로 모드일 때 경고 메시지 위치 조정 */
   @media (orientation: landscape) {
     #orientation-warning {
-      padding-top: 5vh;
+      padding-top: 0;
+      padding-top: env(safe-area-inset-top, 0px);
     }
     
     #orientation-warning-icon {
       font-size: 50px;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
     }
     
     #orientation-warning h2 {
       font-size: 18px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
     
     #orientation-warning p {
       font-size: 14px;
       max-width: 280px;
+      line-height: 1.4;
     }
   }

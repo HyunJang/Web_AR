@@ -2863,6 +2863,25 @@ class OrientationManager {
     const isLandscape = window.innerWidth > window.innerHeight;
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     
+    // 가로 모드일 때 말풍선 숨기기
+    const speechBubbles = document.querySelectorAll('.speech-bubble');
+    if (isLandscape && isMobile) {
+      speechBubbles.forEach(bubble => {
+        bubble.style.display = 'none';
+        bubble.style.visibility = 'hidden';
+        bubble.style.opacity = '0';
+      });
+    } else {
+      speechBubbles.forEach(bubble => {
+        // show 클래스가 있는 경우에만 표시
+        if (bubble.classList.contains('show')) {
+          bubble.style.display = '';
+          bubble.style.visibility = '';
+          bubble.style.opacity = '';
+        }
+      });
+    }
+    
     if (this.orientationWarning) {
       // 가로 모드이고 방향 고정이 안 된 경우 경고 표시
       if (isLandscape && isMobile && !this.isLocked) {

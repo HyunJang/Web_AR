@@ -1327,28 +1327,30 @@
     width: 100vw;
     height: 100vh;
     background: rgba(0, 0, 0, 0.95);
-    display: none;
+    display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    z-index: 999999;
-    color: #fff;
-    text-align: center;
-    padding: 20px;
-    font-family: 'Noto Sans KR', sans-serif;
+    z-index: 99999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    pointer-events: none;
   }
   
   #orientation-warning.show {
-    display: flex;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
   }
   
   #orientation-warning-icon {
-    font-size: 64px;
+    font-size: 80px;
     margin-bottom: 30px;
-    animation: rotateIcon 2s ease-in-out infinite;
+    animation: rotateDevice 2s ease-in-out infinite;
   }
   
-  @keyframes rotateIcon {
+  @keyframes rotateDevice {
     0%, 100% {
       transform: rotate(0deg);
     }
@@ -1358,32 +1360,37 @@
   }
   
   #orientation-warning h2 {
+    color: #fff;
     font-size: 24px;
     font-weight: 700;
     margin-bottom: 20px;
-    color: #fff;
+    text-align: center;
+    font-family: 'Noto Sans KR', sans-serif;
   }
   
   #orientation-warning p {
-    font-size: 18px;
-    line-height: 1.6;
     color: rgba(255, 255, 255, 0.9);
+    font-size: 16px;
+    line-height: 1.6;
+    text-align: center;
     max-width: 300px;
+    font-family: 'Noto Sans KR', sans-serif;
   }
   
-  /* 가로 모드 감지 */
-  @media screen and (orientation: landscape) and (max-width: 768px) {
-    body {
-      overflow: hidden;
+  /* 모바일 반응형 */
+  @media (max-width: 480px) {
+    #orientation-warning-icon {
+      font-size: 60px;
+      margin-bottom: 20px;
     }
     
-    #orientation-warning {
-      display: flex !important;
+    #orientation-warning h2 {
+      font-size: 20px;
+      margin-bottom: 15px;
     }
     
-    #camera-container,
-    #splash-screen,
-    #photo-result {
-      display: none !important;
+    #orientation-warning p {
+      font-size: 14px;
+      max-width: 250px;
     }
   }

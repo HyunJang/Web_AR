@@ -346,8 +346,8 @@
     }
     
     #character-guide img {
-      width: clamp(180px, 50vw, 320px) !important; /* 크기 줄임 */
-      max-width: 50vw !important;
+      width: clamp(150px, 40vw, 280px) !important; /* 크기 더 줄임 */
+      max-width: 40vw !important;
     }
   }
 
@@ -1116,21 +1116,21 @@
     }
     
     #camera-speech-image {
-      width: min(70vw, 800px) !important;
-      max-width: 70vw !important;
-      max-height: 40vh !important; /* 높이 더 많이 줄임 */
-      min-width: 300px !important;
+      width: min(65vw, 750px) !important;
+      max-width: 65vw !important;
+      max-height: 35vh !important; /* 높이 더 줄임 */
+      min-width: 280px !important;
     }
     
     #result-speech-image {
-      width: min(70vw, 800px) !important;
-      max-width: 70vw !important;
-      max-height: 40vh !important; /* 높이 더 많이 줄임 */
-      min-width: 300px !important;
+      width: min(65vw, 750px) !important;
+      max-width: 65vw !important;
+      max-height: 35vh !important; /* 높이 더 줄임 */
+      min-width: 280px !important;
     }
     
     .speech-image {
-      max-height: 35vh !important; /* 높이 더 많이 줄임 */
+      max-height: 30vh !important; /* 높이 더 줄임 */
     }
   }
   

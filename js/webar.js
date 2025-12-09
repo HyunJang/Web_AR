@@ -421,10 +421,10 @@ class WebARExperience {
         
         if (isLandscape) {
           // 가로 모드: 크기 더 많이 줄이고 상단으로 최대한 올림
-          img.style.width = 'min(70vw, 800px)';
-          img.style.maxWidth = '70vw';
-          img.style.maxHeight = '40vh';
-          img.style.minWidth = '300px';
+          img.style.width = 'min(65vw, 750px)';
+          img.style.maxWidth = '65vw';
+          img.style.maxHeight = '35vh';
+          img.style.minWidth = '280px';
           img.style.height = 'auto';
         } else if (isMobile) {
           const viewportWidth = window.innerWidth;
@@ -1680,10 +1680,10 @@ class WebARExperience {
         
         if (isLandscape) {
           // 가로 모드: 크기 더 많이 줄이고 상단으로 최대한 올림
-          img.style.width = 'min(70vw, 800px)';
-          img.style.maxWidth = '70vw';
-          img.style.maxHeight = '40vh';
-          img.style.minWidth = '300px';
+          img.style.width = 'min(65vw, 750px)';
+          img.style.maxWidth = '65vw';
+          img.style.maxHeight = '35vh';
+          img.style.minWidth = '280px';
           img.style.height = 'auto';
         } else if (isMobile) {
           if (viewportWidth <= 480) {

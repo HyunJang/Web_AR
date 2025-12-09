@@ -2859,6 +2859,11 @@ class OrientationManager {
       setTimeout(() => {
         this.checkOrientation();
         // 가로 모드 지원하므로 방향 고정 제거
+        
+        // 방향 변경 시 캐릭터 위치 업데이트
+        if (window.webarInstance && window.webarInstance.character && window.webarInstance.isCharacterVisible) {
+          window.webarInstance.updateCharacterTransform();
+        }
       }, 100);
     });
     
@@ -2883,6 +2888,11 @@ class OrientationManager {
           if (!resultSpeechImage.src.includes(newSrc.split('/').pop())) {
             resultSpeechImage.src = newSrc + '?t=' + Date.now();
           }
+        }
+        
+        // 방향 변경 시 캐릭터 위치 업데이트
+        if (window.webarInstance.character && window.webarInstance.isCharacterVisible) {
+          window.webarInstance.updateCharacterTransform();
         }
       }
     });
@@ -2914,6 +2924,11 @@ class OrientationManager {
         if (!resultSpeechImage.src.includes(newSrc.split('/').pop())) {
           resultSpeechImage.src = newSrc + '?t=' + Date.now();
         }
+      }
+      
+      // 방향 변경 시 캐릭터 위치 업데이트
+      if (window.webarInstance.character && window.webarInstance.isCharacterVisible) {
+        window.webarInstance.updateCharacterTransform();
       }
     }
     

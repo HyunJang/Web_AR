@@ -1082,14 +1082,7 @@
     will-change: transform, opacity, top;
   }
   
-  /* 가로 모드에서 말풍선 숨기기 */
-  @media (orientation: landscape) {
-    .speech-bubble {
-      display: none !important;
-      opacity: 0 !important;
-      visibility: hidden !important;
-    }
-  }
+  /* 가로 모드에서도 말풍선 표시 (rotate 이미지 사용) */
   
   .speech-bubble.show {
     transform: translateX(-50%) translateY(0);

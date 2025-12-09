@@ -405,7 +405,7 @@ class WebARExperience {
     const img = document.getElementById('camera-speech-image');
     const charId = (window.characterData && window.characterData.id) || this.getCharacterId();
     if (bubble && img) {
-      const src = `./assets/characters/c${charId}_before.png`;
+      const src = this.getCharacterImageFilename('before', charId);
       // 이미지가 로드된 뒤에 강제로 표시 (모바일 표시 안정화)
       const showBubble = () => {
         bubble.classList.add('show');
@@ -1590,7 +1590,7 @@ class WebARExperience {
     const img = document.getElementById('result-speech-image');
     const charId = (window.characterData && window.characterData.id) || this.getCharacterId();
     if (bubble && img) {
-      const src = `./assets/characters/c${charId}_after.png`;
+      const src = this.getCharacterImageFilename('after', charId);
       
       // 애니메이션 제거
       bubble.style.animation = 'none';
@@ -1728,6 +1728,17 @@ class WebARExperience {
     return parseInt(urlParams.get('char')) || 1;
   }
   
+  // 가로 모드 감지 함수
+  isLandscapeMode() {
+    return window.innerWidth > window.innerHeight;
+  }
+  
+  // 캐릭터 이미지 파일명 생성 (가로/세로 모드에 따라)
+  getCharacterImageFilename(prefix, charId) {
+    const suffix = this.isLandscapeMode() ? '_rotate' : '';
+    return `./assets/characters/c${charId}_${prefix}${suffix}.png`;
+  }
+  
   hideOriginalElements() {
     // 원래 화면의 요소들 숨기기
     this.hideCharacterGuide();
@@ -1784,9 +1795,9 @@ class WebARExperience {
     const cameraSpeechImage = document.getElementById('camera-speech-image');
     if (cameraSpeechImage) {
       const charId = (window.characterData && window.characterData.id) || this.getCharacterId();
-      const beforeSrc = `./assets/characters/c${charId}_before.png`;
+      const beforeSrc = this.getCharacterImageFilename('before', charId);
       // 현재 _after.png인 경우 _before.png로 변경
-      if (cameraSpeechImage.src.includes('_after.png')) {
+      if (cameraSpeechImage.src.includes('_after')) {
         cameraSpeechImage.src = beforeSrc + '?t=' + Date.now();
       }
     }
@@ -2840,22 +2851,40 @@ class OrientationManager {
     // 초기 방향 확인
     this.checkOrientation();
     
-    // Screen Orientation API로 방향 고정 시도 (지원되는 경우)
-    this.lockOrientation();
+    // 가로 모드 지원하므로 방향 고정하지 않음
+    // this.lockOrientation();
     
     // 방향 변경 감지
     window.addEventListener('orientationchange', () => {
       setTimeout(() => {
         this.checkOrientation();
-        // 고정이 해제되었을 수 있으므로 다시 고정 시도
-        if (!this.isLocked) {
-          this.lockOrientation();
-        }
+        // 가로 모드 지원하므로 방향 고정 제거
       }, 100);
     });
     
     window.addEventListener('resize', () => {
       this.checkOrientation();
+      // 방향 변경 시 말풍선 이미지 업데이트
+      if (window.webarInstance) {
+        const cameraSpeechImage = document.getElementById('camera-speech-image');
+        const resultSpeechImage = document.getElementById('result-speech-image');
+        
+        if (cameraSpeechImage && cameraSpeechImage.src) {
+          const charId = (window.characterData && window.characterData.id) || window.webarInstance.getCharacterId();
+          const newSrc = window.webarInstance.getCharacterImageFilename('before', charId);
+          if (!cameraSpeechImage.src.includes(newSrc.split('/').pop())) {
+            cameraSpeechImage.src = newSrc + '?t=' + Date.now();
+          }
+        }
+        
+        if (resultSpeechImage && resultSpeechImage.src) {
+          const charId = (window.characterData && window.characterData.id) || window.webarInstance.getCharacterId();
+          const newSrc = window.webarInstance.getCharacterImageFilename('after', charId);
+          if (!resultSpeechImage.src.includes(newSrc.split('/').pop())) {
+            resultSpeechImage.src = newSrc + '?t=' + Date.now();
+          }
+        }
+      }
     });
   }
   
@@ -2863,100 +2892,107 @@ class OrientationManager {
     const isLandscape = window.innerWidth > window.innerHeight;
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     
-    // 가로 모드일 때 말풍선 숨기기
-    const speechBubbles = document.querySelectorAll('.speech-bubble');
-    if (isLandscape && isMobile) {
-      speechBubbles.forEach(bubble => {
-        bubble.style.display = 'none';
-        bubble.style.visibility = 'hidden';
-        bubble.style.opacity = '0';
-      });
-    } else {
-      speechBubbles.forEach(bubble => {
-        // show 클래스가 있는 경우에만 표시
-        if (bubble.classList.contains('show')) {
-          bubble.style.display = '';
-          bubble.style.visibility = '';
-          bubble.style.opacity = '';
+    // 가로 모드에서도 말풍선 표시 (rotate 이미지 사용)
+    // 말풍선 이미지 업데이트가 필요한 경우 업데이트
+    if (window.webarInstance) {
+      const cameraSpeechImage = document.getElementById('camera-speech-image');
+      const resultSpeechImage = document.getElementById('result-speech-image');
+      
+      // 카메라 말풍선 이미지 업데이트
+      if (cameraSpeechImage && cameraSpeechImage.src) {
+        const charId = (window.characterData && window.characterData.id) || window.webarInstance.getCharacterId();
+        const newSrc = window.webarInstance.getCharacterImageFilename('before', charId);
+        if (!cameraSpeechImage.src.includes(newSrc.split('/').pop())) {
+          cameraSpeechImage.src = newSrc + '?t=' + Date.now();
         }
-      });
+      }
+      
+      // 결과 말풍선 이미지 업데이트
+      if (resultSpeechImage && resultSpeechImage.src) {
+        const charId = (window.characterData && window.characterData.id) || window.webarInstance.getCharacterId();
+        const newSrc = window.webarInstance.getCharacterImageFilename('after', charId);
+        if (!resultSpeechImage.src.includes(newSrc.split('/').pop())) {
+          resultSpeechImage.src = newSrc + '?t=' + Date.now();
+        }
+      }
     }
     
     if (this.orientationWarning) {
-      // 가로 모드이고 방향 고정이 안 된 경우 경고 표시
-      if (isLandscape && isMobile && !this.isLocked) {
-        this.orientationWarning.classList.add('show');
-      } else {
-        this.orientationWarning.classList.remove('show');
-      }
+      // 가로 모드 경고는 더 이상 표시하지 않음 (가로 모드 지원)
+      this.orientationWarning.classList.remove('show');
     }
   }
   
   async lockOrientation() {
+    // 가로 모드 지원하므로 방향 고정 비활성화
     // Screen Orientation API 지원 확인 및 세로 모드 고정 시도
-    if (screen.orientation && screen.orientation.lock) {
-      try {
-        await screen.orientation.lock('portrait');
-        this.isLocked = true;
-        console.log('화면 방향이 세로 모드로 고정되었습니다.');
-        // 고정 성공 시 경고 숨김
-        if (this.orientationWarning) {
-          this.orientationWarning.classList.remove('show');
-        }
-      } catch (error) {
-        // 방향 고정 실패 (일부 브라우저/기기에서는 제한됨)
-        this.isLocked = false;
-        console.log('화면 방향 고정을 지원하지 않거나 실패:', error);
-        // 실패 시 방향 확인하여 경고 표시
-        this.checkOrientation();
-      }
-    } else if (screen.lockOrientation) {
-      // 구형 API 지원
-      try {
-        screen.lockOrientation('portrait');
-        this.isLocked = true;
-        console.log('화면 방향이 세로 모드로 고정되었습니다.');
-        if (this.orientationWarning) {
-          this.orientationWarning.classList.remove('show');
-        }
-      } catch (error) {
-        this.isLocked = false;
-        console.log('화면 방향 고정을 지원하지 않거나 실패:', error);
-        this.checkOrientation();
-      }
-    } else if (screen.mozLockOrientation) {
-      // Firefox 지원
-      try {
-        screen.mozLockOrientation('portrait');
-        this.isLocked = true;
-        console.log('화면 방향이 세로 모드로 고정되었습니다.');
-        if (this.orientationWarning) {
-          this.orientationWarning.classList.remove('show');
-        }
-      } catch (error) {
-        this.isLocked = false;
-        console.log('화면 방향 고정을 지원하지 않거나 실패:', error);
-        this.checkOrientation();
-      }
-    } else if (screen.msLockOrientation) {
-      // IE/Edge 지원
-      try {
-        screen.msLockOrientation('portrait');
-        this.isLocked = true;
-        console.log('화면 방향이 세로 모드로 고정되었습니다.');
-        if (this.orientationWarning) {
-          this.orientationWarning.classList.remove('show');
-        }
-      } catch (error) {
-        this.isLocked = false;
-        console.log('화면 방향 고정을 지원하지 않거나 실패:', error);
-        this.checkOrientation();
-      }
-    } else {
-      // API를 지원하지 않는 경우
-      this.isLocked = false;
-      this.checkOrientation();
-    }
+    // if (screen.orientation && screen.orientation.lock) {
+    //   try {
+    //     await screen.orientation.lock('portrait');
+    //     this.isLocked = true;
+    //     console.log('화면 방향이 세로 모드로 고정되었습니다.');
+    //     // 고정 성공 시 경고 숨김
+    //     if (this.orientationWarning) {
+    //       this.orientationWarning.classList.remove('show');
+    //     }
+    //   } catch (error) {
+    //     // 방향 고정 실패 (일부 브라우저/기기에서는 제한됨)
+    //     this.isLocked = false;
+    //     console.log('화면 방향 고정을 지원하지 않거나 실패:', error);
+    //     // 실패 시 방향 확인하여 경고 표시
+    //     this.checkOrientation();
+    //   }
+    // } else if (screen.lockOrientation) {
+    //   // 구형 API 지원
+    //   try {
+    //     screen.lockOrientation('portrait');
+    //     this.isLocked = true;
+    //     console.log('화면 방향이 세로 모드로 고정되었습니다.');
+    //     if (this.orientationWarning) {
+    //       this.orientationWarning.classList.remove('show');
+    //     }
+    //   } catch (error) {
+    //     this.isLocked = false;
+    //     console.log('화면 방향 고정을 지원하지 않거나 실패:', error);
+    //     this.checkOrientation();
+    //   }
+    // } else if (screen.mozLockOrientation) {
+    //   // Firefox 지원
+    //   try {
+    //     screen.mozLockOrientation('portrait');
+    //     this.isLocked = true;
+    //     console.log('화면 방향이 세로 모드로 고정되었습니다.');
+    //     if (this.orientationWarning) {
+    //       this.orientationWarning.classList.remove('show');
+    //     }
+    //   } catch (error) {
+    //     this.isLocked = false;
+    //     console.log('화면 방향 고정을 지원하지 않거나 실패:', error);
+    //     this.checkOrientation();
+    //   }
+    // } else if (screen.msLockOrientation) {
+    //   // IE/Edge 지원
+    //   try {
+    //     screen.msLockOrientation('portrait');
+    //     this.isLocked = true;
+    //     console.log('화면 방향이 세로 모드로 고정되었습니다.');
+    //     if (this.orientationWarning) {
+    //       this.orientationWarning.classList.remove('show');
+    //     }
+    //   } catch (error) {
+    //     this.isLocked = false;
+    //     console.log('화면 방향 고정을 지원하지 않거나 실패:', error);
+    //     this.checkOrientation();
+    //   }
+    // } else {
+    //   // API를 지원하지 않는 경우
+    //   this.isLocked = false;
+    //   this.checkOrientation();
+    // }
+    
+    // 가로 모드 지원하므로 방향 고정하지 않음
+    this.isLocked = false;
+    this.checkOrientation();
   }
 }
 

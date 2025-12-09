@@ -1112,25 +1112,25 @@
   /* 가로 모드에서 말풍선 크기 조정 및 상단 위치 조정 */
   @media (orientation: landscape) {
     .speech-bubble {
-      top: calc(env(safe-area-inset-top, 0px) + 4px) !important; /* 더 상단으로 올림 */
+      top: calc(env(safe-area-inset-top, 0px) + 2px) !important; /* 최대한 상단으로 올림 */
     }
     
     #camera-speech-image {
-      width: min(75vw, 900px) !important;
-      max-width: 75vw !important;
-      max-height: 50vh !important; /* 높이 더 줄임 */
-      min-width: 350px !important;
+      width: min(70vw, 800px) !important;
+      max-width: 70vw !important;
+      max-height: 40vh !important; /* 높이 더 많이 줄임 */
+      min-width: 300px !important;
     }
     
     #result-speech-image {
-      width: min(75vw, 900px) !important;
-      max-width: 75vw !important;
-      max-height: 50vh !important; /* 높이 더 줄임 */
-      min-width: 350px !important;
+      width: min(70vw, 800px) !important;
+      max-width: 70vw !important;
+      max-height: 40vh !important; /* 높이 더 많이 줄임 */
+      min-width: 300px !important;
     }
     
     .speech-image {
-      max-height: 45vh !important; /* 높이 더 줄임 */
+      max-height: 35vh !important; /* 높이 더 많이 줄임 */
     }
   }
   

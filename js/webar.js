@@ -417,7 +417,16 @@ class WebARExperience {
         
         // 이미지 크기 강제 설정 (모바일 대응)
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        if (isMobile) {
+        const isLandscape = this.isLandscapeMode();
+        
+        if (isLandscape) {
+          // 가로 모드: 크기 줄이고 상단으로 올림
+          img.style.width = 'min(85vw, 1000px)';
+          img.style.maxWidth = '85vw';
+          img.style.maxHeight = '60vh';
+          img.style.minWidth = '400px';
+          img.style.height = 'auto';
+        } else if (isMobile) {
           const viewportWidth = window.innerWidth;
           const viewportHeight = window.innerHeight;
           
@@ -1663,12 +1672,20 @@ class WebARExperience {
       // 이미지 크기 강제 설정 (모바일 대응)
       const setImageSize = () => {
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const isLandscape = this.isLandscapeMode();
         const viewportWidth = window.innerWidth;
         
         img.style.display = 'block';
         img.style.animation = 'none'; // 이미지 애니메이션도 제거
         
-        if (isMobile) {
+        if (isLandscape) {
+          // 가로 모드: 크기 줄이고 상단으로 올림
+          img.style.width = 'min(85vw, 1000px)';
+          img.style.maxWidth = '85vw';
+          img.style.maxHeight = '60vh';
+          img.style.minWidth = '400px';
+          img.style.height = 'auto';
+        } else if (isMobile) {
           if (viewportWidth <= 480) {
             // 모바일 작은 화면
             img.style.width = 'min(100vw, 1000px)';

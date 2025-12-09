@@ -338,6 +338,18 @@
     height: auto;
     display: block;
   }
+  
+  /* 가로 모드에서 가이드 팝업 크기 조정 및 상단 위치 조정 */
+  @media (orientation: landscape) {
+    #character-guide {
+      top: 40% !important; /* 상단으로 올림 (50% -> 40%) */
+    }
+    
+    #character-guide img {
+      width: clamp(180px, 50vw, 320px) !important; /* 크기 줄임 */
+      max-width: 50vw !important;
+    }
+  }
 
   /* 4번 캐릭터 전용 바닥 이미지 (고정) */
   #character-ground {
@@ -1096,6 +1108,31 @@
   }
   
   /* 가로 모드에서도 말풍선 표시 (rotate 이미지 사용) */
+  
+  /* 가로 모드에서 말풍선 크기 조정 및 상단 위치 조정 */
+  @media (orientation: landscape) {
+    .speech-bubble {
+      top: calc(env(safe-area-inset-top, 0px) + 8px) !important; /* 상단으로 더 올림 */
+    }
+    
+    #camera-speech-image {
+      width: min(85vw, 1000px) !important;
+      max-width: 85vw !important;
+      max-height: 60vh !important; /* 높이 줄임 */
+      min-width: 400px !important;
+    }
+    
+    #result-speech-image {
+      width: min(85vw, 1000px) !important;
+      max-width: 85vw !important;
+      max-height: 60vh !important; /* 높이 줄임 */
+      min-width: 400px !important;
+    }
+    
+    .speech-image {
+      max-height: 50vh !important; /* 높이 줄임 */
+    }
+  }
   
   .speech-bubble.show {
     transform: translateX(-50%) translateY(0);

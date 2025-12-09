@@ -420,12 +420,14 @@ class WebARExperience {
         const isLandscape = this.isLandscapeMode();
         
         if (isLandscape) {
-          // 가로 모드: 크기 더 많이 줄이고 상단으로 최대한 올림
-          img.style.width = 'min(65vw, 750px)';
-          img.style.maxWidth = '65vw';
-          img.style.maxHeight = '35vh';
-          img.style.minWidth = '280px';
+          // 가로 모드: 크기 더 많이 줄이고 상단으로 최대한 올림, 하단 잘림 방지
+          const viewportHeight = window.innerHeight;
+          img.style.width = 'min(55vw, 650px)';
+          img.style.maxWidth = '55vw';
+          img.style.maxHeight = `${viewportHeight - 150}px`; // 화면 높이에서 여유 공간 제외 (상단 + 하단 버튼)
+          img.style.minWidth = '240px';
           img.style.height = 'auto';
+          img.style.objectFit = 'contain';
         } else if (isMobile) {
           const viewportWidth = window.innerWidth;
           const viewportHeight = window.innerHeight;
@@ -1679,12 +1681,14 @@ class WebARExperience {
         img.style.animation = 'none'; // 이미지 애니메이션도 제거
         
         if (isLandscape) {
-          // 가로 모드: 크기 더 많이 줄이고 상단으로 최대한 올림
-          img.style.width = 'min(65vw, 750px)';
-          img.style.maxWidth = '65vw';
-          img.style.maxHeight = '35vh';
-          img.style.minWidth = '280px';
+          // 가로 모드: 크기 더 많이 줄이고 상단으로 최대한 올림, 하단 잘림 방지
+          const viewportHeight = window.innerHeight;
+          img.style.width = 'min(55vw, 650px)';
+          img.style.maxWidth = '55vw';
+          img.style.maxHeight = `${viewportHeight - 150}px`; // 화면 높이에서 여유 공간 제외 (상단 + 하단 버튼)
+          img.style.minWidth = '240px';
           img.style.height = 'auto';
+          img.style.objectFit = 'contain';
         } else if (isMobile) {
           if (viewportWidth <= 480) {
             // 모바일 작은 화면

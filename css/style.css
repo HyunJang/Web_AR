@@ -1113,24 +1113,29 @@
   @media (orientation: landscape) {
     .speech-bubble {
       top: calc(env(safe-area-inset-top, 0px) + 2px) !important; /* 최대한 상단으로 올림 */
+      max-height: calc(100vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 150px) !important; /* 하단 여유 공간 확보 (버튼 영역 고려) */
+      overflow: visible !important;
     }
     
     #camera-speech-image {
-      width: min(65vw, 750px) !important;
-      max-width: 65vw !important;
-      max-height: 35vh !important; /* 높이 더 줄임 */
-      min-width: 280px !important;
+      width: min(55vw, 650px) !important;
+      max-width: 55vw !important;
+      max-height: calc(100vh - 150px) !important; /* 화면 높이에서 여유 공간 제외 (상단 + 하단 버튼) */
+      min-width: 240px !important;
+      object-fit: contain !important;
     }
     
     #result-speech-image {
-      width: min(65vw, 750px) !important;
-      max-width: 65vw !important;
-      max-height: 35vh !important; /* 높이 더 줄임 */
-      min-width: 280px !important;
+      width: min(55vw, 650px) !important;
+      max-width: 55vw !important;
+      max-height: calc(100vh - 150px) !important; /* 화면 높이에서 여유 공간 제외 (상단 + 하단 버튼) */
+      min-width: 240px !important;
+      object-fit: contain !important;
     }
     
     .speech-image {
-      max-height: 30vh !important; /* 높이 더 줄임 */
+      max-height: calc(100vh - 150px) !important; /* 화면 높이에서 여유 공간 제외 */
+      object-fit: contain !important;
     }
   }
   

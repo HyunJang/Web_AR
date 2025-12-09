@@ -911,31 +911,50 @@ class WebARExperience {
     const newX = this.characterState.startX + deltaX;
     const newY = this.characterState.startY + deltaY;
     
+    // 가로 모드 감지
+    const isLandscape = this.isLandscapeMode();
+    
+    // 버튼 영역 높이 계산 (가로 모드에서는 더 작게)
+    const controlsHeight = isLandscape ? 80 : 120; // 가로 모드에서는 버튼 영역이 작음
+    
     // 중앙 모드와 기본 위치 모드에 따라 경계 제한이 다름
     if (this.isCharacterCentered) {
       // 중앙 모드: 중앙 기준 상대 위치 제한
       const maxX = window.innerWidth / 2 - 100; // 화면 중앙에서 좌우 최대 이동 거리
-      const maxY = window.innerHeight / 2 - 150; // 화면 중앙에서 상하 최대 이동 거리
-      const minY = -window.innerHeight / 2 + 150; // 말풍선 영역 차단 (상단 150px)
+      
+      // 가로 모드에서는 Y축 이동 범위를 더 넓게 설정
+      const maxY = isLandscape 
+        ? window.innerHeight / 2 - controlsHeight / 2 // 가로 모드: 버튼 영역만 고려
+        : window.innerHeight / 2 - 150; // 세로 모드: 말풍선 영역 고려
+      
+      const minY = isLandscape
+        ? -window.innerHeight / 2 + controlsHeight / 2 // 가로 모드: 하단 버튼 영역만 고려
+        : -window.innerHeight / 2 + 150; // 세로 모드: 말풍선 영역 차단 (상단 150px)
       
       // X축 제한 (중앙 기준)
       this.characterState.x = Math.max(-maxX, Math.min(newX, maxX));
       
-      // Y축 제한 - 말풍선 영역으로 이동 완전 차단
+      // Y축 제한 - 가로 모드에서도 위아래 이동 가능하도록
       this.characterState.y = Math.max(minY, Math.min(newY, maxY));
     } else {
       // 기본 위치 모드: 화면 하단 기준 위치 제한
       const maxX = window.innerWidth - 200; // 캐릭터 최대 너비
-      const maxY = window.innerHeight - 300; // 캐릭터 최대 높이
+      
+      // 가로 모드에서는 Y축 이동 범위를 더 넓게 설정
+      const maxY = isLandscape
+        ? window.innerHeight - controlsHeight - 50 // 가로 모드: 버튼 영역만 고려
+        : window.innerHeight - 300; // 세로 모드: 기본 제한
       
       // 말풍선 영역 완전 차단 (상단 150px 영역)
-      const speechBubbleHeight = 150;
-      const minY = -window.innerHeight/2 + speechBubbleHeight;
+      const speechBubbleHeight = isLandscape ? 100 : 150; // 가로 모드에서는 말풍선이 작을 수 있음
+      const minY = isLandscape
+        ? -window.innerHeight + controlsHeight + 50 // 가로 모드: 하단 버튼 영역만 고려
+        : -window.innerHeight/2 + speechBubbleHeight; // 세로 모드: 말풍선 영역 차단
       
       // X축 제한
       this.characterState.x = Math.max(-window.innerWidth/2 + 100, Math.min(newX, maxX));
       
-      // Y축 제한 - 말풍선 영역으로 이동 완전 차단
+      // Y축 제한 - 가로 모드에서도 위아래 이동 가능하도록
       this.characterState.y = Math.max(minY, Math.min(newY, maxY));
       
       // 추가 검증: 말풍선 영역으로 이동 시도 시 강제로 제한
@@ -1136,9 +1155,23 @@ class WebARExperience {
         this.character.style.left = '50%';
       }
       
+      // 가로 모드 감지
+      const isLandscape = this.isLandscapeMode();
+      
+      // 버튼 영역 높이 계산 (가로 모드에서는 더 작게)
+      const controlsHeight = isLandscape ? 80 : 120;
+      
       // 성능 최적화: transform 문자열 계산 최적화
       const x = this.characterState.x;
-      const y = this.characterState.y;
+      let y = this.characterState.y;
+      
+      // 가로 모드에서 Y축 제한 조정
+      if (isLandscape) {
+        const maxY = window.innerHeight / 2 - controlsHeight / 2;
+        const minY = -window.innerHeight / 2 + controlsHeight / 2;
+        y = Math.max(minY, Math.min(y, maxY));
+      }
+      
       const scale = this.characterState.scale;
       const scaleX = scale * this.characterState.flipX;
       const rotation = this.characterState.rotation;
@@ -1155,23 +1188,46 @@ class WebARExperience {
         this.character.style.left = '0';
       }
       
+      // 가로 모드 감지
+      const isLandscape = this.isLandscapeMode();
+      
+      // 버튼 영역 높이 계산 (가로 모드에서는 더 작게)
+      const controlsHeight = isLandscape ? 80 : 120;
+      
       const baseX = window.innerWidth / 2 - 100; // 캐릭터 너비의 절반
-      const baseY = window.innerHeight * 0.6 - 150; // 화면 하단 60% 지점
+      const baseY = isLandscape 
+        ? window.innerHeight * 0.5 // 가로 모드: 중앙 기준
+        : window.innerHeight * 0.6 - 150; // 세로 모드: 화면 하단 60% 지점
       
       // 최종 위치 계산
       const finalX = baseX + this.characterState.x;
       let finalY = baseY + this.characterState.y;
       
-      // 말풍선 영역 완전 차단 (상단 150px 영역)
-      const speechBubbleHeight = 150;
-      const minY = -window.innerHeight/2 + speechBubbleHeight;
+      // 말풍선 영역 완전 차단 (가로 모드에서는 더 작게)
+      const speechBubbleHeight = isLandscape ? 100 : 150;
+      const minY = isLandscape
+        ? -window.innerHeight / 2 + controlsHeight / 2 // 가로 모드: 버튼 영역만 고려
+        : -window.innerHeight/2 + speechBubbleHeight; // 세로 모드: 말풍선 영역 차단
       const absoluteMinY = baseY + minY;
+      
+      // 하단 제한 (버튼 영역 고려)
+      const maxY = isLandscape
+        ? window.innerHeight - controlsHeight - 50 // 가로 모드: 버튼 영역만 고려
+        : window.innerHeight - 300; // 세로 모드: 기본 제한
+      const absoluteMaxY = baseY + (isLandscape ? window.innerHeight / 2 - controlsHeight / 2 : window.innerHeight / 2 - 150);
       
       // 말풍선 영역으로 이동 시도 시 강제로 제한
       if (finalY < absoluteMinY) {
         finalY = absoluteMinY;
         // 상태도 업데이트하여 다음 드래그에서 올바른 위치 유지
         this.characterState.y = minY;
+      }
+      
+      // 하단 버튼 영역으로 이동 시도 시 강제로 제한
+      if (finalY > absoluteMaxY) {
+        finalY = absoluteMaxY;
+        const maxYOffset = isLandscape ? window.innerHeight / 2 - controlsHeight / 2 : window.innerHeight / 2 - 150;
+        this.characterState.y = maxYOffset;
       }
       
       // 성능 최적화: transform 문자열 계산 최적화

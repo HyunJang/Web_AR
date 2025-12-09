@@ -436,6 +436,19 @@
     pointer-events: none;
   }
   
+  /* 가로 모드에서 버튼 영역 축소 */
+  @media (orientation: landscape) {
+    #controls {
+      padding: 10px 15px;
+      gap: 10px;
+    }
+    
+    #photo-actions {
+      bottom: 20px;
+      gap: 10px;
+    }
+  }
+  
   .btn {
     padding: 15px 25px;
     border: none;
@@ -1212,6 +1225,14 @@
     z-index: 100002;
     opacity: 0;
     transition: opacity 0.5s ease 0.3s;
+  }
+  
+  /* 가로 모드에서 액션 버튼 영역 축소 */
+  @media (orientation: landscape) {
+    #photo-actions {
+      bottom: 20px;
+      gap: 10px;
+    }
   }
   
   #photo-result.show #photo-actions {

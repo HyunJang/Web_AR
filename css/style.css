@@ -59,6 +59,23 @@
     }
   }
   
+  /* 가로 모드에서 애니메이션 조정 */
+  @media (orientation: landscape) {
+    @keyframes pulseTouch {
+      0%, 100% {
+        transform: translateY(-50%) scale(1);
+      }
+      50% {
+        transform: translateY(-50%) scale(1.02);
+      }
+    }
+    
+    #splash-screen:active .splash-image {
+      transform: translateY(-50%) scale(0.98) !important;
+      transition: transform 0.1s ease;
+    }
+  }
+  
   #splash-screen:active .splash-image {
     transform: scale(0.98);
     transition: transform 0.1s ease;
@@ -79,6 +96,13 @@
   
   /* 가로 모드에서 스플래시 이미지 크기 조정 및 가운데 정렬 */
   @media (orientation: landscape) {
+    #splash-screen {
+      justify-content: center !important;
+      align-items: center !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+    
     .splash-image {
       max-width: 45vw !important;
       max-height: 40vh !important;
@@ -86,11 +110,9 @@
       height: auto !important;
       margin: 0 auto !important;
       display: block !important;
-    }
-    
-    #splash-screen {
-      justify-content: center !important;
-      align-items: center !important;
+      position: relative !important;
+      top: 50% !important;
+      transform: translateY(-50%) !important;
     }
   }
   
@@ -205,11 +227,21 @@
   
   /* 모바일 가로 모드 */
   @media (max-width: 768px) and (orientation: landscape) {
+    #splash-screen {
+      justify-content: center !important;
+      align-items: center !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+    
     .splash-image {
       max-width: 40vw !important;
       max-height: 35vh !important;
       margin: 0 auto !important;
       display: block !important;
+      position: relative !important;
+      top: 50% !important;
+      transform: translateY(-50%) !important;
     }
   }
   
@@ -784,11 +816,21 @@
   
   /* 작은 모바일 가로 모드 */
   @media (max-width: 480px) and (orientation: landscape) {
+    #splash-screen {
+      justify-content: center !important;
+      align-items: center !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+    
     .splash-image {
       max-width: 35vw !important;
       max-height: 30vh !important;
       margin: 0 auto !important;
       display: block !important;
+      position: relative !important;
+      top: 50% !important;
+      transform: translateY(-50%) !important;
     }
   }
     

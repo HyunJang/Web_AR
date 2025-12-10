@@ -413,6 +413,18 @@ class WebARExperience {
         bubble.style.visibility = 'visible';
         bubble.style.opacity = '1';
         bubble.style.transform = 'translateX(-50%) translateY(0)';
+        
+        // Safari 감지
+        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent) || 
+                        (navigator.vendor && navigator.vendor.indexOf('Apple') > -1);
+        
+        // Safari에서 상단 여백 제거
+        if (isSafari && this.isLandscapeMode()) {
+          bubble.style.top = '0';
+          bubble.style.paddingTop = '0';
+          bubble.style.marginTop = '0';
+        }
+        
         img.style.display = 'block';
         
         // 이미지 크기 강제 설정 (모바일 대응)
@@ -422,10 +434,11 @@ class WebARExperience {
         if (isLandscape) {
           // 가로 모드: 크기 최소화하고 최상단에 붙임, 하단 잘림 방지
           const viewportHeight = window.innerHeight;
-          img.style.width = 'min(50vw, 600px)';
-          img.style.maxWidth = '50vw';
-          img.style.maxHeight = `${viewportHeight - 180}px`; // 화면 높이에서 여유 공간 제외 (상단 + 하단 버튼)
-          img.style.minWidth = '220px';
+          const safeAreaBottom = isSafari ? 220 : 200; // Safari에서 더 보수적인 값
+          img.style.width = 'min(45vw, 550px)';
+          img.style.maxWidth = '45vw';
+          img.style.maxHeight = `${viewportHeight - safeAreaBottom}px`; // 화면 높이에서 여유 공간 제외
+          img.style.minWidth = '200px';
           img.style.height = 'auto';
           img.style.objectFit = 'contain';
         } else if (isMobile) {
@@ -1667,9 +1680,20 @@ class WebARExperience {
     if (bubble && img) {
       const src = this.getCharacterImageFilename('after', charId);
       
+      // Safari 감지
+      const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent) || 
+                      (navigator.vendor && navigator.vendor.indexOf('Apple') > -1);
+      
       // 애니메이션 제거
       bubble.style.animation = 'none';
       bubble.style.transition = 'none';
+      
+      // Safari에서 상단 여백 제거
+      if (isSafari && this.isLandscapeMode()) {
+        bubble.style.top = '0';
+        bubble.style.paddingTop = '0';
+        bubble.style.marginTop = '0';
+      }
       
       // 이미지 크기 강제 설정 (모바일 대응)
       const setImageSize = () => {
@@ -1677,16 +1701,21 @@ class WebARExperience {
         const isLandscape = this.isLandscapeMode();
         const viewportWidth = window.innerWidth;
         
+        // Safari 감지
+        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent) || 
+                        (navigator.vendor && navigator.vendor.indexOf('Apple') > -1);
+        
         img.style.display = 'block';
         img.style.animation = 'none'; // 이미지 애니메이션도 제거
         
         if (isLandscape) {
           // 가로 모드: 크기 최소화하고 최상단에 붙임, 하단 잘림 방지
           const viewportHeight = window.innerHeight;
-          img.style.width = 'min(50vw, 600px)';
-          img.style.maxWidth = '50vw';
-          img.style.maxHeight = `${viewportHeight - 180}px`; // 화면 높이에서 여유 공간 제외 (상단 + 하단 버튼)
-          img.style.minWidth = '220px';
+          const safeAreaBottom = isSafari ? 220 : 200; // Safari에서 더 보수적인 값
+          img.style.width = 'min(45vw, 550px)';
+          img.style.maxWidth = '45vw';
+          img.style.maxHeight = `${viewportHeight - safeAreaBottom}px`; // 화면 높이에서 여유 공간 제외
+          img.style.minWidth = '200px';
           img.style.height = 'auto';
           img.style.objectFit = 'contain';
         } else if (isMobile) {

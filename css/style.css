@@ -466,17 +466,20 @@
     #character-ground {
       bottom: 0 !important;
       top: auto !important;
-      height: calc(100vh - 40px) !important; /* 화면 높이에서 버튼 높이 절반(40px) 제외 */
-      max-height: calc(100vh - 40px) !important;
+      height: 45px !important; /* 버튼 중간 높이만큼만 (약 45px) */
+      max-height: 45px !important;
+      min-height: 45px !important;
       overflow: hidden !important;
       display: flex !important;
       align-items: flex-end !important;
+      justify-content: center !important;
     }
     
     #character-ground img {
       width: 100% !important;
-      height: auto !important;
-      max-height: calc(100vh - 40px) !important;
+      height: 45px !important;
+      max-height: 45px !important;
+      min-height: 45px !important;
       object-fit: cover !important;
       object-position: bottom center !important;
       display: block !important;
@@ -486,24 +489,30 @@
   /* 모바일 가로 모드 */
   @media (max-width: 768px) and (orientation: landscape) {
     #character-ground {
-      height: calc(100vh - 35px) !important;
-      max-height: calc(100vh - 35px) !important;
+      height: 40px !important;
+      max-height: 40px !important;
+      min-height: 40px !important;
     }
     
     #character-ground img {
-      max-height: calc(100vh - 35px) !important;
+      height: 40px !important;
+      max-height: 40px !important;
+      min-height: 40px !important;
     }
   }
   
   /* 작은 모바일 가로 모드 */
   @media (max-width: 480px) and (orientation: landscape) {
     #character-ground {
-      height: calc(100vh - 30px) !important;
-      max-height: calc(100vh - 30px) !important;
+      height: 35px !important;
+      max-height: 35px !important;
+      min-height: 35px !important;
     }
     
     #character-ground img {
-      max-height: calc(100vh - 30px) !important;
+      height: 35px !important;
+      max-height: 35px !important;
+      min-height: 35px !important;
     }
   }
   

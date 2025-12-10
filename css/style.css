@@ -101,11 +101,14 @@
   /* 가로 모드에서 스플래시 이미지 크기 조정 및 가운데 정렬 */
   @media (orientation: landscape) {
     #splash-screen {
-      justify-content: center !important;
+      justify-content: flex-start !important;
       align-items: center !important;
       display: flex !important;
       flex-direction: column !important;
-      padding: 0 !important;
+      padding-top: 5vh !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      padding-bottom: 0 !important;
     }
     
     .splash-image {
@@ -113,7 +116,7 @@
       max-height: 50vh !important;
       width: auto !important;
       height: auto !important;
-      margin: 0 !important;
+      margin: 0 auto !important;
       display: block !important;
       position: static !important;
       transform: none !important;
@@ -233,17 +236,20 @@
   /* 모바일 가로 모드 */
   @media (max-width: 768px) and (orientation: landscape) {
     #splash-screen {
-      justify-content: center !important;
+      justify-content: flex-start !important;
       align-items: center !important;
       display: flex !important;
       flex-direction: column !important;
-      padding: 0 !important;
+      padding-top: 4vh !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      padding-bottom: 0 !important;
     }
     
     .splash-image {
       max-width: 50vw !important;
       max-height: 45vh !important;
-      margin: 0 !important;
+      margin: 0 auto !important;
       display: block !important;
       position: static !important;
       transform: none !important;
@@ -823,17 +829,20 @@
   /* 작은 모바일 가로 모드 */
   @media (max-width: 480px) and (orientation: landscape) {
     #splash-screen {
-      justify-content: center !important;
+      justify-content: flex-start !important;
       align-items: center !important;
       display: flex !important;
       flex-direction: column !important;
-      padding: 0 !important;
+      padding-top: 3vh !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      padding-bottom: 0 !important;
     }
     
     .splash-image {
       max-width: 45vw !important;
       max-height: 40vh !important;
-      margin: 0 !important;
+      margin: 0 auto !important;
       display: block !important;
       position: static !important;
       transform: none !important;

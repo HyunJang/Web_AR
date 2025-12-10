@@ -2679,8 +2679,39 @@ class SplashManager {
     this.init();
   }
   
+  // 가로 모드 감지 함수
+  isLandscapeMode() {
+    return window.innerWidth > window.innerHeight;
+  }
+  
+  // 스플래시 이미지 경로 설정 (가로/세로 모드에 따라)
+  getSplashImagePath() {
+    return this.isLandscapeMode() ? './assets/popup_rotate.png' : './assets/popup.png';
+  }
+  
   init() {
     if (this.splashScreen) {
+      // 스플래시 이미지 경로 설정
+      const splashImage = this.splashScreen.querySelector('img');
+      if (splashImage) {
+        splashImage.src = this.getSplashImagePath();
+      }
+      
+      // 방향 변경 시 이미지 업데이트
+      const updateSplashImage = () => {
+        if (splashImage) {
+          splashImage.src = this.getSplashImagePath() + '?t=' + Date.now();
+        }
+      };
+      
+      window.addEventListener('orientationchange', () => {
+        setTimeout(updateSplashImage, 100);
+      });
+      
+      window.addEventListener('resize', () => {
+        updateSplashImage();
+      });
+      
       // 모든 리소스 로드 대기
       this.loadAllResources().then(() => {
         this.resourcesLoaded = true;
@@ -2757,9 +2788,12 @@ class SplashManager {
   loadAllResources() {
     const promises = [];
     
-    // 팝업 이미지 로드
+    // 팝업 이미지 로드 (가로/세로 모드에 따라 경로 설정)
     const splashImage = this.splashScreen ? this.splashScreen.querySelector('img') : null;
     if (splashImage) {
+      // 현재 방향에 맞는 이미지 경로 설정
+      splashImage.src = this.getSplashImagePath();
+      
       const imagePromise = new Promise((resolve, reject) => {
         if (splashImage.complete && splashImage.naturalWidth > 0) {
           resolve();

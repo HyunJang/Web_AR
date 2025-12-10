@@ -59,26 +59,30 @@
     }
   }
   
+  #splash-screen:active .splash-image {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+  
   /* 가로 모드에서 애니메이션 조정 */
   @media (orientation: landscape) {
-    @keyframes pulseTouch {
+    #splash-screen .splash-image {
+      animation: pulseTouchLandscape 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulseTouchLandscape {
       0%, 100% {
-        transform: translateY(-50%) scale(1);
+        transform: scale(1);
       }
       50% {
-        transform: translateY(-50%) scale(1.02);
+        transform: scale(1.02);
       }
     }
     
     #splash-screen:active .splash-image {
-      transform: translateY(-50%) scale(0.98) !important;
+      transform: scale(0.98) !important;
       transition: transform 0.1s ease;
     }
-  }
-  
-  #splash-screen:active .splash-image {
-    transform: scale(0.98);
-    transition: transform 0.1s ease;
   }
   
   .splash-image {
@@ -101,6 +105,7 @@
       align-items: center !important;
       display: flex !important;
       flex-direction: column !important;
+      padding: 0 !important;
     }
     
     .splash-image {
@@ -108,11 +113,11 @@
       max-height: 40vh !important;
       width: auto !important;
       height: auto !important;
-      margin: 0 auto !important;
+      margin: 0 !important;
       display: block !important;
-      position: relative !important;
-      top: 50% !important;
-      transform: translateY(-50%) !important;
+      position: static !important;
+      transform: none !important;
+      object-fit: contain !important;
     }
   }
   
@@ -232,16 +237,17 @@
       align-items: center !important;
       display: flex !important;
       flex-direction: column !important;
+      padding: 0 !important;
     }
     
     .splash-image {
       max-width: 40vw !important;
       max-height: 35vh !important;
-      margin: 0 auto !important;
+      margin: 0 !important;
       display: block !important;
-      position: relative !important;
-      top: 50% !important;
-      transform: translateY(-50%) !important;
+      position: static !important;
+      transform: none !important;
+      object-fit: contain !important;
     }
   }
   
@@ -821,16 +827,17 @@
       align-items: center !important;
       display: flex !important;
       flex-direction: column !important;
+      padding: 0 !important;
     }
     
     .splash-image {
       max-width: 35vw !important;
       max-height: 30vh !important;
-      margin: 0 auto !important;
+      margin: 0 !important;
       display: block !important;
-      position: relative !important;
-      top: 50% !important;
-      transform: translateY(-50%) !important;
+      position: static !important;
+      transform: none !important;
+      object-fit: contain !important;
     }
   }
     

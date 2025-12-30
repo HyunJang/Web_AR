@@ -1910,9 +1910,28 @@ class WebARExperience {
     if (cameraSpeechImage) {
       const charId = (window.characterData && window.characterData.id) || this.getCharacterId();
       const beforeSrc = this.getCharacterImageFilename('before', charId);
-      // 현재 _after.png인 경우 _before.png로 변경
-      if (cameraSpeechImage.src.includes('_after')) {
-        cameraSpeechImage.src = beforeSrc + '?t=' + Date.now();
+      // 현재 경로에서 쿼리 파라미터 제거 후 파일명만 비교
+      const currentSrc = cameraSpeechImage.src.split('?')[0];
+      const currentFileName = currentSrc.split('/').pop();
+      const beforeFileName = beforeSrc.split('/').pop();
+      
+      // 현재 _after.png인 경우 _before.png로 변경 (타임스탬프 제거)
+      if (currentFileName !== beforeFileName) {
+        cameraSpeechImage.src = beforeSrc;
+        // 이미지 로드 완료 후 말풍선 표시 보장
+        cameraSpeechImage.onload = () => {
+          const bubble = document.getElementById('camera-speech-bubble');
+          if (bubble && this.isCharacterVisible) {
+            bubble.classList.add('show');
+            bubble.style.display = 'block';
+            bubble.style.visibility = 'visible';
+            bubble.style.opacity = '1';
+          }
+        };
+        // 이미지 로드 실패 시 기존 이미지 유지
+        cameraSpeechImage.onerror = () => {
+          console.warn('말풍선 이미지 로드 실패, 기존 이미지 유지');
+        };
       }
     }
     
@@ -2700,7 +2719,8 @@ class SplashManager {
       // 방향 변경 시 이미지 업데이트
       const updateSplashImage = () => {
         if (splashImage) {
-          splashImage.src = this.getSplashImagePath() + '?t=' + Date.now();
+          // 타임스탬프 없이 경로만 업데이트 (캐시 버스팅 제거)
+          splashImage.src = this.getSplashImagePath();
         }
       };
       
@@ -3022,19 +3042,59 @@ class OrientationManager {
         const cameraSpeechImage = document.getElementById('camera-speech-image');
         const resultSpeechImage = document.getElementById('result-speech-image');
         
-        if (cameraSpeechImage && cameraSpeechImage.src) {
+        if (cameraSpeechImage) {
           const charId = (window.characterData && window.characterData.id) || window.webarInstance.getCharacterId();
           const newSrc = window.webarInstance.getCharacterImageFilename('before', charId);
-          if (!cameraSpeechImage.src.includes(newSrc.split('/').pop())) {
-            cameraSpeechImage.src = newSrc + '?t=' + Date.now();
+          // 현재 경로에서 쿼리 파라미터 제거 후 파일명만 비교
+          const currentSrc = cameraSpeechImage.src.split('?')[0];
+          const currentFileName = currentSrc.split('/').pop();
+          const newFileName = newSrc.split('/').pop();
+          
+          // 이미지 파일명이 변경된 경우에만 업데이트 (타임스탬프 제거)
+          if (currentFileName !== newFileName) {
+            cameraSpeechImage.src = newSrc;
+            // 이미지 로드 완료 후 말풍선 표시 보장
+            cameraSpeechImage.onload = () => {
+              const bubble = document.getElementById('camera-speech-bubble');
+              if (bubble && window.webarInstance.isCharacterVisible) {
+                bubble.classList.add('show');
+                bubble.style.display = 'block';
+                bubble.style.visibility = 'visible';
+                bubble.style.opacity = '1';
+              }
+            };
+            // 이미지 로드 실패 시 기존 이미지 유지
+            cameraSpeechImage.onerror = () => {
+              console.warn('말풍선 이미지 로드 실패, 기존 이미지 유지');
+            };
           }
         }
         
-        if (resultSpeechImage && resultSpeechImage.src) {
+        if (resultSpeechImage) {
           const charId = (window.characterData && window.characterData.id) || window.webarInstance.getCharacterId();
           const newSrc = window.webarInstance.getCharacterImageFilename('after', charId);
-          if (!resultSpeechImage.src.includes(newSrc.split('/').pop())) {
-            resultSpeechImage.src = newSrc + '?t=' + Date.now();
+          // 현재 경로에서 쿼리 파라미터 제거 후 파일명만 비교
+          const currentSrc = resultSpeechImage.src.split('?')[0];
+          const currentFileName = currentSrc.split('/').pop();
+          const newFileName = newSrc.split('/').pop();
+          
+          // 이미지 파일명이 변경된 경우에만 업데이트 (타임스탬프 제거)
+          if (currentFileName !== newFileName) {
+            resultSpeechImage.src = newSrc;
+            // 이미지 로드 완료 후 말풍선 표시 보장
+            resultSpeechImage.onload = () => {
+              const bubble = document.getElementById('speech-bubble');
+              if (bubble && document.getElementById('photo-result').classList.contains('show')) {
+                bubble.classList.add('show');
+                bubble.style.display = 'block';
+                bubble.style.visibility = 'visible';
+                bubble.style.opacity = '1';
+              }
+            };
+            // 이미지 로드 실패 시 기존 이미지 유지
+            resultSpeechImage.onerror = () => {
+              console.warn('결과 말풍선 이미지 로드 실패, 기존 이미지 유지');
+            };
           }
         }
         
@@ -3057,20 +3117,60 @@ class OrientationManager {
       const resultSpeechImage = document.getElementById('result-speech-image');
       
       // 카메라 말풍선 이미지 업데이트
-      if (cameraSpeechImage && cameraSpeechImage.src) {
+      if (cameraSpeechImage) {
         const charId = (window.characterData && window.characterData.id) || window.webarInstance.getCharacterId();
         const newSrc = window.webarInstance.getCharacterImageFilename('before', charId);
-        if (!cameraSpeechImage.src.includes(newSrc.split('/').pop())) {
-          cameraSpeechImage.src = newSrc + '?t=' + Date.now();
+        // 현재 경로에서 쿼리 파라미터 제거 후 파일명만 비교
+        const currentSrc = cameraSpeechImage.src ? cameraSpeechImage.src.split('?')[0] : '';
+        const currentFileName = currentSrc ? currentSrc.split('/').pop() : '';
+        const newFileName = newSrc.split('/').pop();
+        
+        // 이미지 파일명이 변경된 경우에만 업데이트 (타임스탬프 제거)
+        if (currentFileName !== newFileName) {
+          cameraSpeechImage.src = newSrc;
+          // 이미지 로드 완료 후 말풍선 표시 보장
+          cameraSpeechImage.onload = () => {
+            const bubble = document.getElementById('camera-speech-bubble');
+            if (bubble && window.webarInstance.isCharacterVisible) {
+              bubble.classList.add('show');
+              bubble.style.display = 'block';
+              bubble.style.visibility = 'visible';
+              bubble.style.opacity = '1';
+            }
+          };
+          // 이미지 로드 실패 시 기존 이미지 유지
+          cameraSpeechImage.onerror = () => {
+            console.warn('말풍선 이미지 로드 실패, 기존 이미지 유지');
+          };
         }
       }
       
       // 결과 말풍선 이미지 업데이트
-      if (resultSpeechImage && resultSpeechImage.src) {
+      if (resultSpeechImage) {
         const charId = (window.characterData && window.characterData.id) || window.webarInstance.getCharacterId();
         const newSrc = window.webarInstance.getCharacterImageFilename('after', charId);
-        if (!resultSpeechImage.src.includes(newSrc.split('/').pop())) {
-          resultSpeechImage.src = newSrc + '?t=' + Date.now();
+        // 현재 경로에서 쿼리 파라미터 제거 후 파일명만 비교
+        const currentSrc = resultSpeechImage.src ? resultSpeechImage.src.split('?')[0] : '';
+        const currentFileName = currentSrc ? currentSrc.split('/').pop() : '';
+        const newFileName = newSrc.split('/').pop();
+        
+        // 이미지 파일명이 변경된 경우에만 업데이트 (타임스탬프 제거)
+        if (currentFileName !== newFileName) {
+          resultSpeechImage.src = newSrc;
+          // 이미지 로드 완료 후 말풍선 표시 보장
+          resultSpeechImage.onload = () => {
+            const bubble = document.getElementById('speech-bubble');
+            if (bubble && document.getElementById('photo-result').classList.contains('show')) {
+              bubble.classList.add('show');
+              bubble.style.display = 'block';
+              bubble.style.visibility = 'visible';
+              bubble.style.opacity = '1';
+            }
+          };
+          // 이미지 로드 실패 시 기존 이미지 유지
+          resultSpeechImage.onerror = () => {
+            console.warn('결과 말풍선 이미지 로드 실패, 기존 이미지 유지');
+          };
         }
       }
       
